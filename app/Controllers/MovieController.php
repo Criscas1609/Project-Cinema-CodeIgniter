@@ -11,8 +11,7 @@ class MovieController extends BaseController
     public function index()
     {
         $movieModel = new Movie();
-        $allMovies = $movieModel->findAll();
-        return view('info', ['allMovies' => $allMovies]);
+        return view('info', ['allMovies' => $movieModel->findAll(), 'message' => null]);
     }
 
     public function reservationView(){

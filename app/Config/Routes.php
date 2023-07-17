@@ -38,6 +38,7 @@ $routes->get('/login', 'LoginController::index');
 $routes->get('/movies', 'MovieController::index');
 $routes->get('/update-info', 'LoginController::getInfo');
 $routes->get('/movies/reservation', 'MovieController::reservationView');
+$routes->get('/reservation', 'TicketController::showAllReservation');
 
 
 //Metodos Post
@@ -50,6 +51,8 @@ $routes->post('/movies/reservation/cancel', 'TicketController::deleteProcess');
 $routes->post('/movies/show', 'TicketController::showReservation');
 $routes->post('/movies/complete', 'TicketController::saveReservation');
 $routes->post('/update-info/complete', 'RegisterController::updateUser');
+$routes->post('/delete-reservation', 'TicketController::deleteAll');
+
 
 
 

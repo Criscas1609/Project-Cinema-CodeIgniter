@@ -37,6 +37,12 @@
                                   <button type="submit" class="nav-link btn btn-link" name="inicio" value="inicio">Inicio</button>
                               </form>
                           </li>
+                          <li class="nav-item active">
+                              <form action="/reservation" method="get">
+                                  <button type="submit" class="nav-link btn btn-link" name="inicio" value="inicio">Reservas</button>
+                              </form>
+                              
+                          </li>
                           <li class="nav-item">
                               <form action="/update-info" method="get">
                                   <button type="submit" class="nav-link btn btn-link" name="usuario" value="usuario">
@@ -161,6 +167,7 @@
         feedback.innerText = message;
     }
 </script>
+<script src="<?= base_url('js/Validate.js') ?>"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </body>
 </html>

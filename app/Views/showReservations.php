@@ -77,17 +77,30 @@
               <!-- Peliculas -->
                 <?php foreach ($allMovies as $movie): ?>
                   <div class="mb-4 col d-flex justify-content-center">
-                    <div class="mb-1 rounded shadow card bg-dark" style="width: 214px; height: 480px">
+                    <div class="mb-1 rounded shadow card bg-dark" style="width: 214px; height: 600px">
                         <h5 class="pt-2 text-center card-title" style="color: #eee"><?= $movie->name ?> </h5>
                       <img src=<?= $movie->image ?> class="card-img-top" alt="...">
                       <div class="card-body">
                         <div class="gap-2 d-grid">
                         <div class="mb-4 form-outline">
-                          <p class="pt-2 text-center" style="color: #eee">Hora: <?= $movie->schedule ?></p>
-                          <form method="get" action="/movies/reservation">
-                              <input type="hidden" name="movie" value="<?= $movie->name ?>">
+                            <p class="pt-2 text-center" style="color: #eee">Hora: <?= $movie->schedule ?><br>
+                                Sala: <?= $movie->room ?> <br>
+                                <?php foreach ($tickets as $ticket): ?>
+                              <?php if($ticket->clientName == $client->name && $ticket->movieName == $movie->name): ?>
+                                Sillas: <?=$ticket->chair?><br>
+                                <?php endif; ?>
+                                <?php endforeach; ?>
+                            </p>
+                            <form method="post" action="/delete-reservation">
+                                    <input type="hidden" name="movie" value="<?= $movie->name ?>">
+                                    <div class="pt-1 pb-1 mb-5 text-center">
+                                    <button type="submit" class="custom-button btn btn-primary">Cancelar Todo</button>
+                                    </div>
+                                </form>
+                                
+                                
+
                               <div class="pt-1 pb-1 mb-5 text-center">
-                              <button type="submit" class="custom-button btn btn-primary">Reservar</button>
                               </div>
                           </form>
                         </div>

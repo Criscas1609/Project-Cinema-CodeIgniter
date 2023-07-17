@@ -20,7 +20,7 @@
 </head>
 <?php if ($error != null): ?>
     <div class="alert alert-primary" role="alert">
-        Solo puede seleccionar 4 asientos para hacer la reserva
+        <?= $error ?>
     </div>
 <?php endif; ?>
 
@@ -95,13 +95,22 @@
                                                 ?>
                                                 <?php if ($tickets && $movie): ?>
                                                     <?php foreach ($tickets as $ticket): ?>
-                                                        <?php if ($ticket->chair == $chair && $ticket->movieName == $movie->name): ?>
+                                                        <?php if ($ticket->chair == $chair && $ticket->movieName == $movie->name && $ticket->status == 'complete'): ?>
                                                             <?php
                                                                 $occupied = true;
                                                             ?>
                                                             <form action="/movies/reservation/save" method="POST">
-                                                            <input type="hidden" name="chair" value="{{ $chair }}">
+                                                            <input type="hidden" name="chair" value="<?= $chair ?>">
                                                             <button type="submit" class="custom-button color-2"><?= $chair ?></button>
+                                                            </form><br>
+                                                        <?php endif; ?>
+                                                        <?php if ($ticket->chair == $chair && $ticket->movieName == $movie->name && $ticket->status == 'waiting'): ?>
+                                                            <?php
+                                                                $occupied = true;
+                                                            ?>
+                                                            <form action="/movies/reservation/save" method="POST">
+                                                            <input type="hidden" name="chair" value="<?= $chair ?>">
+                                                            <button type="submit" class="custom-button color-3"><?= $chair ?></button>
                                                             </form><br>
                                                         <?php endif; ?>
                                                     <?php endforeach; ?>

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\Client;
+use App\Models\Movie;
 
 class RegisterController extends BaseController
 {
@@ -17,7 +18,7 @@ class RegisterController extends BaseController
 
     public function index()
     {
-        return view('register');
+        return view('register', ['message' => null]);
     }
 
     public function createClient(){
@@ -31,7 +32,7 @@ class RegisterController extends BaseController
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
         ];
         $clientModel->insert($client);
-        return redirect()->to('/login');
+        return view('index', ['message' => 'Cuenta creada con éxito']);
     }
 
     public function updateUser()
@@ -44,7 +45,8 @@ class RegisterController extends BaseController
         $client->phone = $this->request->getPost('phone');
         $client->email = $this->request->getPost('email');
         $clientModel->save($client);
-        return redirect()->to('/movies');    
+        $movieModel = new Movie();
+        return view('info', ['allMovies' => $movieModel->findAll(), 'message' => 'Actualización de datos realizada con exito']);
     }
 
     

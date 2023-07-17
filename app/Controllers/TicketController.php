@@ -21,9 +21,10 @@ class TicketController extends BaseController
         $movieName = $this->request->getPost('movieName');
         $movie = $movieModel->where('LOWER(name) LIKE', '%' . strtolower($movieName) . '%')->first();
         $client = $this->session->get('user');
-        $counter = $this->validateTicket($ticketModel, $client, $movie); 
+        $counter = $this->validateTicket($ticketModel, $client, $movie);
+        $validator = $this->validateChair($ticketModel, $this->request->getPost('chair'), $movie);
 
-        if($counter <= 4){
+        if($counter <= 4 && $validator == false){
          $ticket = [
             'movieName' => $movie->name,
             'schedule' => $movie->schedule,
@@ -34,10 +35,23 @@ class TicketController extends BaseController
         ];
         $ticketModel->insert($ticket);
         return view('movieSeat', ['movie' => $movie, 'tickets' => $ticketModel->findAll(), 'error' => null]);
-        }else{
-            $error = 'alert';
-            $tickets = $ticketModel->findAll();
-            return view('movieSeat', ['movie' => $movie, 'tickets' => $tickets, 'error' => $error]);
+        }elseif($validator == true){
+            $error = 'El asiento que ha seleccionado ya fue reservado';
+            return view('movieSeat', ['movie' => $movie, 'tickets' => $ticketModel->findAll(), 'error' => $error]);
+        }
+        else{
+            $error = 'Solo puede seleccionar 4 asientos para hacer la reserva';
+            return view('movieSeat', ['movie' => $movie, 'tickets' => $ticketModel->findAll(), 'error' => $error]);
+        }
+    }
+
+    public function validateChair($ticketModel, $chair, $movie){
+        $tickets = $ticketModel->findAll();
+        foreach($tickets as $ticket){
+            if($ticket->chair == $chair) {
+            $validator = true;
+            return $validator;
+            }
         }
     }
 
@@ -53,6 +67,7 @@ class TicketController extends BaseController
     }
 
 
+
     public function deleteProcess(){
         $movieModel = new Movie();
         $ticketModel = new Ticket();
@@ -66,9 +81,9 @@ class TicketController extends BaseController
                 $ticketModel->where('id', $ticket->id)->delete();
             }
         }
-
-        return redirect()->to('/movies');
-        ;
+        $message = 'Reserva cancelada con exito';
+        return view('info', ['allMovies' =>  $movieModel->findAll(), 'message' => $message]);
+        
     }
 
     public function showReservation(){
@@ -111,5 +126,45 @@ class TicketController extends BaseController
     return redirect()->to('/movies');
 
     }
+
+    public function showAllReservation(){
+        $movieModel = new Movie();
+        $ticketModel = new Ticket();
+        $client = $this->session->get('user');
+        $clientChair = [];
+        $total=0;
+
+        foreach($movieModel->findAll() as $movie){
+            foreach($ticketModel->findAll() as $ticket){
+                if($ticket->clientName == $client->name && $ticket->movieName == $movie->name){
+                    $clientChair[] = $ticket->chair; 
+                    $total = $total + $ticket->price;
+
+                }
+            }
+        }
+
+        return view('showReservations', ['allMovies' =>  $movieModel->findAll(),'client'=> $client,'tickets' => $ticketModel->findAll(), 'message' => null]);
+    }
+
+    public function deleteAll(){
+        $movieModel = new Movie();
+        $ticketModel = new Ticket();
+        $tickets = $ticketModel->findAll();
+        $movieName = $this->request->getPost('movieName');
+        $movie = $movieModel->where('LOWER(name) LIKE', '%' . strtolower($movieName) . '%')->first();
+        $client = $this->session->get('user');
+
+        foreach($tickets as $ticket){
+            if($ticket->clientName == $client->name && $ticket->movieName == $movie->name && $ticket->status == 'complete'){
+                $ticketModel->where('id', $ticket->id)->delete();
+            }
+        }
+        $message = 'Reserva cancelada con exito';
+        return view('showReservations', ['allMovies' =>  $movieModel->findAll(),'client'=> $client,'tickets' => $ticketModel->findAll(), 'message' => $message]);
+
+    }
+
+
 
 }

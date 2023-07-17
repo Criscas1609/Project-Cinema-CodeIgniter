@@ -18,7 +18,7 @@ class LoginController extends BaseController
 
     public function index()
     {
-        return view('index');
+        return view('index', ['message' => null]);
     }
     public function validateInfo(){
             $username = $this->request->getPost('username');
@@ -28,7 +28,7 @@ class LoginController extends BaseController
             $user = $clientModel->where('username', $username)->first();
   
          if (!$user) {
-             return view('/register');
+             return view('/register', ['message' => 'Usuario no encontrado, crea una cuenta']);
          }
         
          if ($user && password_verify($password, $user->password)) {
